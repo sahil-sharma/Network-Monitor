@@ -1,0 +1,70 @@
+##### Scenario: ######
+
+The server is used for SSL offloading and proxies around 25000 requests per second. Please let us know which metrics are interesting to monitor in that specific case and how would you do that? What are the challenges of monitoring this?
+
+##################
+
+Proposed solution or approach:
+
+We can monitor server (I prefer to use Nginx for the said purpose) with Ngxtop (https://github.com/lebinh/ngxtop). This helps us to monitor Nginx in real-time to parse its logs properly and provides us valuable information such as:
+
+* Source IP's of clients
+* List 4xx or 5xx responses together with HTTP referer
+* Parse access and error logs
+
+We can set the monitoring or alerting for our server to maintain its high availability and performance.
+
+Usually, performance of web server (responsible for SSL offloading and proxy passing 25k requests per second) totally depend on your application and hardware.
+
+Below are the metrics which could be useful for our use-case:
+
+##### From WebServer side: #######
+
+* Uptime: Seconds since the server was started. We can use this to detect respawns
+
+* Current connections: Number of clients connections currently handled
+
+* Current requests: Number of HTTP requests currently handled. Multiple requests can be made over one connection
+
+* Traffic: 	Incoming and outgoing traffic. Will depend on the HTTP requests (GET/POST, etc) and their body sizes.
+
+#########
+
+##### From Infrastructure perspective: ######
+
+* Load: All-in-one performance metric
+
+* CPU usage: A high CPU usage is not a bad thing as long as you don’t reach the limit
+
+* Memory usage: RAM usage depends on your app usage too
+
+* Swap usage: Swap is for emergencies only
+
+* Network bandwidth: Traffic will be directly related to the number of connections and the size of those requests
+
+* Disk usage: Make sure you always have free space for logs, temporary files or backups
+
+#####################
+
+Proposed solution:
+
+We can achieve this either using any commercial metrics tool like NewRelic, Datadog, AppOptics or we can set-up any Open Source tool like Nagios or using collectD (agent), Prometheus (TSDB), Grafana (visualizer).
+Or if we are using any public-cloud platform like AWS then we can set-up Cloudwatch metrics and alerting based on those metrics and threshold. And, further we can add AutoScaling so that we have high-availability.
+
+####################
+
+Could-be challenges:
+
+Like anything else systems too go down due to n-number of reasons. Hence, we need to constantly monitor the server and find out the reasons which could be the failure for our application or systems in-general. Hence, proper alerting to respective stakeholders is mandatory to take necessary actions.
+
+Below links could be valuable to know or learn more about monitoring web servers.
+
+#######################
+
+Reference:
+
+* https://blogs.dropbox.com/tech/2017/09/optimizing-web-servers-for-high-throughput-and-low-latency/amp/
+
+* https://www.techietown.info/2017/03/monitoring-nginx-with-collectdprometheus-and-grafana/
+
+* https://www.martin-helmich.de/en/blog/monitoring-nginx.html

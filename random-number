@@ -1,0 +1,17 @@
+##### Print numbers from 1 - 10 in random order. Each number should appear only once. #######
+
+Instead of writing a function BASH provides us in-built commands (or functions) to do the basic tasks like printing random numbers within a range.
+
+I prefer to go with simple and easy solutions to avoid complexities so that anyone could understand the task.
+
+#################
+
+Solution 1:
+$ for (( i=1;i<=10;i++ )) do echo $RANDOM $i; done|sort -k1|cut -d" " -f2
+
+Solution 2:
+$ shuf -i 1-10 -n 10 | nl
+
+In both the solutions we can easily print the random numbers appearing only once. I am leveraging in-built function $RANDOM with my range (1-10) and then sorting it at first column (which is $RANDOM) and then slicing the second part (which is what I want). SImple yet effective.
+
+In my second solution "shuf" a BASH in-built command (generate random permutations) passing the input range (1-10) and printing the count (means how many numbers I want).
